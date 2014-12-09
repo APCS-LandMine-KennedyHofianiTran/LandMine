@@ -1,12 +1,13 @@
 package com.mrjaffesclass.apcs.mvc.template;
 import com.mrjaffesclass.apcs.messenger.*;
+import java.awt.Color;
 
 /**
  * 
  * The Controller is the master of the App you're writing. It instantiates the
  * view and the model, receives messages from the View in response to user
  * interface (UI) actions like clicking a button, changing an input field, 
- * etc.  It also sends and receives messages to the Model to commuincate
+ * etc.  It also sends and receives messages to the Model to communicate
  * changes required and changes made to the Model variables.  
  *
  * @author Roger Jaffe
@@ -40,10 +41,13 @@ public class Controller implements MessageHandler {
     View view = new View(mvcMessaging);    // This creates our view
     view.init();
     view.setVisible(true);
+    view.getContentPane().setBackground( new Color (0, 255, 255) );
 
     // Create the model
     Model model = new Model(mvcMessaging);  // This creates our model
     model.init();
+    
+    
   }
 
   /**
@@ -53,6 +57,11 @@ public class Controller implements MessageHandler {
    * "this" refers to this controller object.
    */
   public void init() {
+     
+     mvcMessaging.subscribe("view:changeButton", this);
+     mvcMessaging.subscribe("model:mine", this);
+     mvcMessaging.subscribe("model:noMine",this);
+     mvcMessaging.subscribe("view:newGame", this);
     // This is where you would subscribe to any messages the controller
     // would need to process
     // A sample subscriber call would be like...
@@ -60,12 +69,18 @@ public class Controller implements MessageHandler {
   }
 
   @Override
-  public void messageHandler(String messageName, Object messagePayload) {
+  public void messageHandler(String messageName, Object messagePayload) 
+  {
     if (messagePayload != null) {
       System.out.println("MSG: received by controller: "+messageName+" | "+messagePayload.toString());
     } else {
       System.out.println("MSG: received by controller: "+messageName+" | No data sent");
     }
+    
+        
+            
+    
+    
     // This is where the controller would handle any messages
   }
 
@@ -76,7 +91,9 @@ public class Controller implements MessageHandler {
    */
   public static void main(String[] args) {
     Controller app = new Controller();  // Create our controller...
-    app.init();                         // ...and init it too
+    app.init();
+    
+    // ...and init it too
   }
   
 }
